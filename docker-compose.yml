@@ -1,0 +1,9 @@
+version: '3'
+services:
+  tensorboard:
+    image: octothle/tensorboard
+    working_dir: /tensorboard
+    ports:
+      - "6006:6006"
+    volumes:
+      - "$PWD/tensorboard:/app/notebooks/tensorboard/"

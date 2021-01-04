@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>HANDWRITTEN TEXT RECOGNITION</title>
+	<link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+
+</head>
+
+<body>
+		
+
+		<div class="centered">
+			<h1>HANDWRITTEN TEXT RECOGNITION</h1>
+			<canvas id="canvas" ></canvas>
+		</div>
+
+		<div class="centered">
+			<input type="button" class="myButton" value="Predict" style="">
+			<input type="button" id="clearButton" value="Clear" style="">
+			<input type="button" id="download" value="Download"/>
+			<input type="file" id="file" value="Select a file" accept="image/png, image/jpeg"><br>
+			<h2 id="result"></h2>
+		</div>
+
+
+  		<script src="{{url_for('static',filename='jquery-3.2.0.min.js')}}"></script>
+	    <script src="{{url_for('static',filename='index.js')}}"></script>
+	    <script type="text/javascript">
+	   		$(".myButton").click(function(){
+	   			$('#result').text('  Predicting...');
+
+	   			var $SCRIPT_ROOT = {{request.script_root|tojson|safe}};
+
+				var canvasObj = document.getElementById("canvas");	
+
+				img = canvasObj.toDataURL("image/png").replace("image/png", "image/octet-stream");
+
+	   			$.ajax({
+	   				type: "POST",
+	   				url: $SCRIPT_ROOT + "/predict/",
+	   				data: img,
+	 				success: function(data){
+	 					$('#result').text(data);
+	   				}
+	   			});
+	   		});
+	   			
+	   </script>
+	   	<script type="text/javascript">
+   		    function download(filename, text) {
+			    var element = document.createElement('a');
+			    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+			    element.setAttribute('download', filename);
+
+			    element.style.display = 'none';
+			    document.body.appendChild(element);
+
+			    element.click();
+
+			    document.body.removeChild(element);
+			}
+			document.getElementById("download").addEventListener("click", function(){
+		    var text = $('#result').text()
+		    var filename = "output.txt";
+		    
+		    download(filename, text);
+		}, false);
+  		</script>
+
+</body>
+</html>
